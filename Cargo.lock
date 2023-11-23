@@ -85,6 +85,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "axum-suburi"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "hyper",
+ "mime",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tower",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "backtrace"
 version = "0.3.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -367,23 +384,6 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys",
-]
-
-[[package]]
-name = "my-todo"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "axum",
- "hyper",
- "mime",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
- "tower",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]
