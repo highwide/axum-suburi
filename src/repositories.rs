@@ -1,11 +1,10 @@
-
 use std::{
     collections::HashMap,
-    sync::{Arc, RwLock, RwLockWriteGuard, RwLockReadGuard},
+    sync::{Arc, RwLock, RwLockReadGuard, RwLockWriteGuard},
 };
 
 use anyhow::Context;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -34,6 +33,13 @@ pub struct CreateTodo {
     text: String,
 }
 
+#[cfg(test)]
+impl CreateTodo {
+    pub fn new(text: String) -> Self {
+        Self { text }
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct UpdateTodo {
     text: Option<String>,
@@ -45,7 +51,7 @@ impl Todo {
         Self {
             id,
             text,
-            completed: false
+            completed: false,
         }
     }
 }
@@ -60,7 +66,7 @@ pub struct TodoRepositoryForMemory {
 impl TodoRepositoryForMemory {
     pub fn new() -> Self {
         TodoRepositoryForMemory {
-            store: Arc::default()
+            store: Arc::default(),
         }
     }
 
@@ -94,9 +100,7 @@ impl TodoRepository for TodoRepositoryForMemory {
 
     fn update(&self, id: i32, payload: UpdateTodo) -> anyhow::Result<Todo> {
         let mut store = self.write_store_ref();
-        let todo = store
-            .get(&id)
-            .context(RepositoryError::NotFound(id))?;
+        let todo = store.get(&id).context(RepositoryError::NotFound(id))?;
         let text = payload.text.unwrap_or(todo.text.clone());
         let completed = payload.completed.unwrap_or(todo.completed);
         let todo = Todo {
@@ -108,7 +112,7 @@ impl TodoRepository for TodoRepositoryForMemory {
         Ok(todo)
     }
 
-    fn delete(&self, id:i32) -> anyhow::Result<()> {
+    fn delete(&self, id: i32) -> anyhow::Result<()> {
         let mut store = self.write_store_ref();
         store.remove(&id).ok_or(RepositoryError::NotFound(id))?;
         Ok(())
@@ -156,6 +160,5 @@ mod test {
 
         let res = repository.delete(id);
         assert!(res.is_ok());
-
     }
 }
