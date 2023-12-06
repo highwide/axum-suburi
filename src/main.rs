@@ -1,7 +1,7 @@
 mod handlers;
 mod repositories;
 
-use crate::repositories::{TodoRepository, TodoRepositoryForDb};
+use crate::repositories::todo::{TodoRepository, TodoRepositoryForDb};
 use axum::{
     extract::Extension,
     routing::{get, post},
@@ -63,31 +63,10 @@ async fn root() -> &'static str {
     "Hello, World!"
 }
 
-// async fn create_user(
-//     Json(payload): Json<CreateUser>,
-// ) -> impl IntoResponse {
-//     let user = User {
-//         id: 1337,
-//         username: payload.username,
-//     };
-//     (StatusCode::CREATED, Json(user))
-// }
-
-// #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-// struct CreateUser {
-//     username: String,
-// }
-
-// #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-// struct User {
-//     id: u64,
-//     username: String,
-// }
-
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::repositories::{test_utils::TodoRepositoryForMemory, CreateTodo, Todo};
+    use crate::repositories::todo::{test_utils::TodoRepositoryForMemory, CreateTodo, Todo};
     use axum::response::Response;
     use axum::{
         body::Body,
