@@ -10,7 +10,12 @@ import {
 import { NewTodoPayload, Todo } from "./types/todo";
 import { TodoForm } from "./components/TodoForm";
 import { TodoList } from "./components/TodoList";
-import { addTodoItem, getTodoItems } from "./lib/api/todo";
+import {
+  addTodoItem,
+  deleteTodoItem,
+  getTodoItems,
+  updateTodoItem,
+} from "./lib/api/todo";
 
 const TodoApp: FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -23,18 +28,16 @@ const TodoApp: FC = () => {
     setTodos(todos);
   };
 
-  const onUpdate = (updateTodo: Todo) => {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === updateTodo.id) {
-          return {
-            ...todo,
-            ...updateTodo,
-          };
-        }
-        return todo;
-      })
-    );
+  const onUpdate = async (updateTodo: Todo) => {
+    await updateTodoItem(updateTodo);
+    const todos = await getTodoItems();
+    setTodos(todos);
+  };
+
+  const onDelete = async (id: number) => {
+    await deleteTodoItem(id);
+    const todos = await getTodoItems();
+    setTodos(todos);
   };
 
   useEffect(() => {
@@ -73,7 +76,7 @@ const TodoApp: FC = () => {
         <Box maxWidth={700} width="100%">
           <Stack spacing={2}>
             <TodoForm onSubmit={onSubmit} />
-            <TodoList todos={todos} onUpdate={onUpdate} />
+            <TodoList todos={todos} onUpdate={onUpdate} onDelete={onDelete} />
           </Stack>
         </Box>
       </Box>
