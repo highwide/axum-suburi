@@ -28,7 +28,6 @@ async fn main() {
     tracing_subscriber::fmt::init();
     dotenv().ok();
 
-    // let repository = TodoRepositoryForMemory::new();
     let database_url = &env::var("DATABASE_URL").expect("undefined [DATABASE_URL]");
     tracing::debug!("start connect database...");
     let pool = PgPool::connect(database_url).await.expect(&format!(
@@ -210,7 +209,7 @@ mod test {
                 "id": 1,
                 "text": "should_update_todo",
                 "completed": false
-}"#
+            }"#
             .to_string(),
         );
         let res = create_app(todo_repository, label_repository)
@@ -237,28 +236,4 @@ mod test {
             .unwrap();
         assert_eq!(StatusCode::NO_CONTENT, res.status());
     }
-
-    // #[tokio::test]
-    // async fn should_return_user_data() {
-    //     let repository = TodoRepositoryForMemory::new();
-    //     let req = Request::builder()
-    //         .uri("/users")
-    //         .method(Method::POST)
-    //         .header(header::CONTENT_TYPE, mime::APPLICATION_JSON.as_ref())
-    //         .body(Body::from(r#"{"username":"highwide"}"#))
-    //         .unwrap();
-
-    //     let res = create_app(repository).oneshot(req).await.unwrap();
-
-    //     let bytes = hyper::body::to_bytes(res.into_body()).await.unwrap();
-    //     let body: String = String::from_utf8(bytes.to_vec()).unwrap();
-    //     let user: User = serde_json::from_str(&body).expect("cannot convert User instance.");
-    //     assert_eq!(
-    //         user,
-    //         User {
-    //             id: 1337,
-    //             username: "highwide".to_string()
-    //         }
-    //     )
-    // }
 }
