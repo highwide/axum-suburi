@@ -82,7 +82,9 @@ async fn root() -> &'static str {
 mod test {
     use super::*;
     use crate::repositories::label::test_utils::LabelRepositoryForMemory;
-    use crate::repositories::todo::{test_utils::TodoRepositoryForMemory, CreateTodo, TodoEntity};
+    // use crate::repositories::label::Label;
+    use crate::repositories::todo::test_utils::TodoRepositoryForMemory;
+    use crate::repositories::todo::{CreateTodo, TodoEntity};
     use axum::response::Response;
     use axum::{
         body::Body,
