@@ -84,7 +84,7 @@ impl TodoRepository for TodoRepositoryForDb {
         let tx = self.pool.begin().await?;
         let row = sqlx::query_as::<_, TodoFromRow>(
             r#"
-INSERT INTO todos (text, comppleted)
+INSERT INTO todos (text, completed)
 VALUES ($1, false)
 RETURNING *;
             "#,

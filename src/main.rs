@@ -118,7 +118,7 @@ mod test {
     }
 
     #[tokio::test]
-    async fn should_created_todo() {
+    async fn should_create_todo() {
         let expected = TodoEntity::new(1, "should_return_created_todo".to_string());
 
         let todo_repository = TodoRepositoryForMemory::new();
