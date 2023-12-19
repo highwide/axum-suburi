@@ -38,16 +38,37 @@ pub struct TodoEntity {
 }
 
 fn fold_entities(rows: Vec<TodoWithLabelFromRow>) -> Vec<TodoEntity> {
-    rows.iter()
-        .fold(vec![], |mut accum: Vec<TodoEntity>, current| {
-            accum.push(TodoEntity {
-                id: current.id,
-                text: current.text.clone(),
-                completed: current.completed,
-                labels: vec![],
-            });
-            accum
-        })
+    let mut rows = rows.iter();
+    let mut accum: Vec<TodoEntity> = vec![];
+    'outer: while let Some(row) = rows.next() {
+        let mut todos = accum.iter_mut();
+        while let Some(todo) = todos.next() {
+            if todo.id == row.id {
+                todo.labels.push(Label {
+                    id: row.label_id.unwrap(),
+                    name: row.label_name.clone().unwrap(),
+                });
+                continue 'outer;
+            }
+        }
+
+        let labels = if row.label_id.is_some() {
+            vec![Label {
+                id: row.label_id.unwrap(),
+                name: row.label_name.clone().unwrap(),
+            }]
+        } else {
+            vec![]
+        };
+
+        accum.push(TodoEntity {
+            id: row.id,
+            text: row.text.clone(),
+            completed: row.completed,
+            labels,
+        });
+    }
+    accum
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Validate)]
@@ -143,8 +164,11 @@ WHERE
     async fn all(&self) -> anyhow::Result<Vec<TodoEntity>> {
         let todos = sqlx::query_as::<_, TodoWithLabelFromRow>(
             r#"
-SELECT * FROM todos
-ORDER BY id DESC
+SELECT todos.*, labels.id as label_id, labels.name as label_name
+FROM todos
+    LEFT OUTER JOIN todo_labels tl on todos.id = tl.todo_id
+    LEFT OUTER JOIN labels on labels.id = tl.label_id
+ORDER BY todos.id DESC
             "#,
         )
         .fetch_all(&self.pool)
@@ -280,7 +304,7 @@ returning *
 
         // create
         let created = repository
-            .create(CreateTodo::new(todo_text.to_string(), vec![]))
+            .create(CreateTodo::new(todo_text.to_string(), vec![label_1.id]))
             .await
             .expect("[create] returned Err");
         assert_eq!(created.text, todo_text);

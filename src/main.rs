@@ -126,7 +126,7 @@ mod test {
         let req = build_todo_req_with_json(
             "/todos",
             Method::POST,
-            r#"{ "text": "should_return_created_todo" }"#.to_string(),
+            r#"{ "text": "should_return_created_todo", "labels": [1] }"#.to_string(),
         );
         let res = create_app(todo_repository, label_repository)
             .oneshot(req)
