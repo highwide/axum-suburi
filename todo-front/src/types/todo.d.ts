@@ -1,23 +1,27 @@
 export type Todo = {
-  id: number
-  text: string
-  completed: boolean
-  labels: Label[]
-}
+  id: number;
+  text: string;
+  completed: boolean;
+  labels: Label[];
+};
 
 export type NewTodoPayload = {
-  text: string
-}
+  text: string;
+  labels: number[];
+};
 
-export type UpdateTodoPayload = Partial<Omit<Todo, 'id'>> & {
-  id: number
-}
+export type UpdateTodoPayload = {
+  id: number;
+  text?: string;
+  completed?: boolean;
+  labels?: number[];
+};
 
 export type Label = {
-  id: number
-  name: string
-}
+  id: number;
+  name: string;
+};
 
 export type NewLabelPayload = {
-  name: string
-}
+  name: string;
+};
